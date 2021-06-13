@@ -1,3 +1,6 @@
+
+const __BASE_API__ = "//localhost/alex/gestao-de-oficina/projeto/API/index.php";
+const __BASE_URI__ = "//localhost/alex/gestao-de-oficina/projeto";
 (function ($) {
     "use strict";
 /*--
@@ -5,6 +8,8 @@
 -----------------------------------*/
 var $window = $(window);
 var $body = $('body');
+// ------------- LOCAL ENV
+
 
 /*--
     Adomx Dropdown (Custom Dropdown)
