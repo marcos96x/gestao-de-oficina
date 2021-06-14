@@ -1,0 +1,320 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Pecas</title>
+    <meta name="robots" content="noindex, follow" />
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="./../../assets/images/favicon.ico">
+
+    <!-- CSS
+	============================================ -->
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="./../../assets/css/vendor/bootstrap.min.css">
+
+    <!-- Icon Font CSS -->
+    <link rel="stylesheet" href="./../../assets/css/vendor/material-design-iconic-font.min.css">
+    <link rel="stylesheet" href="./../../assets/css/vendor/font-awesome.min.css">
+    <link rel="stylesheet" href="./../../assets/css/vendor/themify-icons.css">
+    <link rel="stylesheet" href="./../../assets/css/vendor/cryptocurrency-icons.css">
+
+    <!-- Plugins CSS -->
+    <link rel="stylesheet" href="./../../assets/css/plugins/plugins.css">
+
+    <!-- Helper CSS -->
+    <link rel="stylesheet" href="./../../assets/css/helper.css">
+
+    <!-- Main Style CSS -->
+    <link rel="stylesheet" href="./../../assets/css/style.css">
+
+    <!-- Custom Style CSS Only For Demo Purpose -->
+    <link id="cus-style" rel="stylesheet" href="./../../assets/css/style-primary.css">
+
+</head>
+
+<body>
+
+    <div class="main-wrapper" id="app">
+
+
+        <!-- Header Section Start -->
+        <div class="header-section">
+            <div class="container-fluid">
+                <div class="row justify-content-between align-items-center">
+
+                    <!-- Header Logo (Header Left) Start -->
+                    <div class="header-logo col-auto">
+                        <h4>
+                            Lista de Peças
+                        </h4>
+                    </div><!-- Header Logo (Header Left) End -->
+
+                    <!-- Header Right Start -->
+                    <div class="header-right flex-grow-1 col-auto">
+                        <div class="row justify-content-between align-items-center">
+
+                            <!-- Side Header Toggle & Search Start -->
+                            <div class="col-auto">
+                                <div class="row align-items-center">
+
+                                    <!--Side Header Toggle-->
+                                    <div class="col-auto"><button class="side-header-toggle"><i
+                                                class="zmdi zmdi-menu"></i></button></div>
+
+                                </div>
+                            </div><!-- Side Header Toggle & Search End -->
+
+                            <!-- Header Notifications Area Start -->
+                            <div class="col-auto">
+
+                                <ul class="header-notification-area">
+
+                                    <!--User-->
+                                    <li class="adomx-dropdown col-auto">
+                                        <a class="toggle" onclick="logout()">
+                                            <a onclick="logout()"><i class="zmdi zmdi-lock-open mr-2"></i> Sair</a>
+                                        </a>
+
+                                    </li>
+
+                                </ul>
+
+                            </div><!-- Header Notifications Area End -->
+
+                        </div>
+                    </div><!-- Header Right End -->
+
+                </div>
+            </div>
+        </div><!-- Header Section End -->
+        <!-- Side Header Start -->
+        <div class="side-header show">
+            <button class="side-header-close"><i class="zmdi zmdi-close"></i></button>
+            <!-- Side Header Inner Start -->
+            <div class="side-header-inner custom-scroll">
+
+                <nav class="side-header-menu" id="side-header-menu">
+                    <!-- MENU LATERAL -->
+                    <ul>
+                        <li><a href="./../dashboard/index.html"><i class="ti-pie-chart"></i> <span>Dashboard</span></a>
+                        </li>
+                        <li class="active"><a href="./../pecas/index.html"><i class="ti-package"></i>
+                                <span>Peças</span></a></li>
+                        <li><a href="./../pecas/categorias.html"><i class="ti-layers"></i> <span>Categoria de
+                                    peças</span></a></li>
+                        <li><a href="./../usuarios/index.html"><i class="ti-user"></i> <span>Usuários</span></a></li>
+                    </ul>
+                </nav>
+
+            </div><!-- Side Header Inner End -->
+        </div><!-- Side Header End -->
+
+        <!-- Content Body Start -->
+        <div class="content-body">
+
+            <!-- Page Headings Start -->
+            <div class="row justify-content-between align-items-center mb-10">
+
+                <!-- Page Heading Start -->
+                <div class="col-12 col-lg-auto mb-20">
+                    <div class="page-heading">
+                        <button class="btn btn-primary" onclick="$('#modalCadastro').modal('show')">Adicionar</button>
+                    </div>
+
+                </div><!-- Page Heading End -->
+
+            </div><!-- Page Headings End -->
+
+            <!-- List Peças Start -->
+            <div class="col-12 mb-30">
+                <div class="box" v-if="pecas != null">
+                    <div class="box-body">
+                        <div class="table-responsive">
+                            <table class="table table-vertical-middle table-selectable">
+
+                                <!-- Table Head Start -->
+                                <thead>
+                                    <tr>
+                                        <!--<th class="selector h5"><button class="button-check"></button></th>-->
+                                        <th><span>ID</span></th>
+                                        <th><span>Ref.</span></th>
+                                        <th><span>Peça</span></th>
+                                        <th><span>Estoque Min.</span></th>
+                                        <th><span>Estoque Atual</span></th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead><!-- Table Head End -->
+
+                                <!-- Table Body Start -->
+                                <tbody>
+                                    <tr v-if="pecas != null" v-for="peca in pecas">
+                                        <td>#{{peca.peca_id}}</td>
+                                        <td>{{peca.peca_referencia}}</td>
+                                        <td>{{peca.peca_nome}}</td>
+                                        <td>{{peca.peca_estoque_qtd_min}}</td>
+                                        <td :class="'text-' + peca.peca_text_estoque">{{peca.peca_estoque_qtd_atual}}
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-secondary"
+                                                v-on:click="show_edit(peca)">Editar</button>
+                                            <button class="btn btn-danger"
+                                                v-on:click="show_remove(peca)">Excluir</button>
+                                        </td>
+                                    </tr>
+                                </tbody><!-- Table Body End -->
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div v-if="pecas == null">
+                    <h3>Você não possui peças cadastradas. Por favor, adicione uma nova</h3>
+                </div>
+            </div><!-- List End -->
+
+        </div><!-- Top Report End -->
+        <div class="modal fade" style="z-index: 99999" id="modalCadastro" role="dialog"
+            aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Adicionar peça</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-12 mt-2">
+                                <label for="">Nome</label>
+                                <input type="text" id="nomeNovo" class="form-control">
+                            </div>
+                            <div class="col-sm-12 mt-2">
+                                <label for="">Categoria</label>
+                                <select id="categoriaNovo" class="form-control">
+                                    <option value="0">Selecione uma opção</option>
+
+                                    <option v-if="categorias != null" v-for="cat in categorias"
+                                        :value="cat.categoria_peca_id">{{cat.categoria_peca_nome}}</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-12 mt-2">
+                                <label for="">Referencia</label>
+                                <input type="text" id="referenciaNovo" class="form-control">
+                            </div>
+                            <div class="col-sm-12 mt-2">
+                                <label for="">Estoque Mínimo</label>
+                                <input type="number" min="0" id="estoqueMinNovo" class="form-control">
+                            </div>
+                            <div class="col-sm-12 mt-2">
+                                <label for="">Estoque Atual</label>
+                                <input type="number" min="0" id="estoqueMaxNovo" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary" v-on:click="gravar()">Salvar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" style="z-index: 99999" id="modalEdit" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Adicionar categoria de peça</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <input type="hidden" id="idEdit">
+                            <div class="col-sm-12">
+                                <label for="">Nome</label>
+                                <input type="text" id="nomeEdit" class="form-control">
+                            </div>
+                            <div class="col-sm-12 mt-2">
+                                <label for="">Categoria</label>
+                                <select id="categoriaEdit" class="form-control">
+                                    <option value="0">Selecione uma opção</option>
+
+                                    <option v-if="categorias != null" v-for="cat in categorias"
+                                        :value="cat.categoria_peca_id">{{cat.categoria_peca_nome}}</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-12 mt-2">
+                                <label for="">Referencia</label>
+                                <input type="text" id="referenciaEdit" class="form-control">
+                            </div>
+                            <div class="col-sm-12 mt-2">
+                                <label for="">Estoque Mínimo</label>
+                                <input type="number" min="0" id="estoqueMinEdit" class="form-control">
+                            </div>
+                            <div class="col-sm-12 mt-2">
+                                <label for="">Estoque Atual</label>
+                                <input type="number" min="0" id="estoqueAtualEdit" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary" v-on:click="editar()">Salvar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" style="z-index: 99999" id="modalRemove" role="dialog"
+            aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Remover categoria de peça</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-12 text-center">
+                                <h4>Atenção</h4>
+                                <p>
+                                    Tem certeza de que deseja remover um registro?
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary" v-on:click="remove()">Remover</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- Top Report End -->
+
+    <script src="./../../assets/js/vendor/modernizr-3.6.0.min.js"></script>
+    <script src="./../../assets/js/vendor/jquery-3.3.1.min.js"></script>
+    <script src="./../../assets/js/vendor/popper.min.js"></script>
+    <script src="./../../assets/js/vendor/bootstrap.min.js"></script>
+    <!--Plugins JS-->
+    <script src="./../../assets/js/plugins/perfect-scrollbar.min.js"></script>
+    <!--Main JS-->
+    <script src="./../../assets/js/vue.js"></script>
+    <script src="./../../assets/js/main.js"></script>
+    <script src="./../../assets/js/system.js"></script>
+    <script src="./../../assets/js/pecas_vue.js"></script>
+
+</body>
+
+</html>

@@ -66,13 +66,13 @@ function autenticacao()
 function getPecas() {
     require_once "./DB.php";
     $res = $db->prepare("
-        SELECT peca_id, peca_nome, peca_estoque_qtd_min, peca_estoque_qtd_atual, peca_referencia, categoria_peca_nome,
+        SELECT peca_id, peca_nome, peca_estoque_qtd_min, peca_estoque_qtd_atual, peca_referencia, peca_tipo,
         IF(peca_estoque_qtd_atual < peca_estoque_qtd_min, 'danger', '') AS peca_text_estoque
         FROM peca
-        JOIN vinculo_categoria_peca ON vinculo_categoria_peca_peca = peca_id
-        JOIN categoria_peca ON vinculo_categoria_peca_categoria = categoria_peca_id
+        JOIN categoria_peca ON peca_tipo = categoria_peca_id
         ORDER BY peca_id DESC
     ");
+    $res->execute();
     $row = $res->fetchAll();
     if (isset($row[0])) {
         send_success(200, $row);
@@ -85,6 +85,7 @@ function salvaPeca() {
     $nome = addslashes(strip_tags($_POST['nome']));
     $estoque_qtd_min = intval(addslashes(strip_tags($_POST['estoque_qtd_min'])));
     $estoque_qtd_atual = intval(addslashes(strip_tags($_POST['estoque_qtd_atual'])));
+    $categoria = intval(addslashes(strip_tags($_POST['tipo'])));
     $referencia = addslashes(strip_tags($_POST['referencia']));
     if (empty($nome)) {
         send_error(403, 'Nome da peça obrigatório');
@@ -93,9 +94,10 @@ function salvaPeca() {
         'nome' => $nome,
         'estoque_qtd_min' => $estoque_qtd_min,
         'estoque_qtd_atual' => $estoque_qtd_atual,
+        'tipo' => $categoria,
         'referencia' => $referencia,
     ];      
-    $res = $db->prepare("INSERT INTO peca (peca_nome, peca_estoque_qtd_min, peca_estoque_qtd_atual, peca_referencia) VALUES (:nome, :estoque_qtd_min, :estoque_qtd_atual, :referencia)");
+    $res = $db->prepare("INSERT INTO peca (peca_nome, peca_estoque_qtd_min, peca_estoque_qtd_atual, peca_referencia, peca_tipo) VALUES (:nome, :estoque_qtd_min, :estoque_qtd_atual, :referencia, :tipo)");
     $res->execute($data);
 
     unset($db);
@@ -109,6 +111,7 @@ function editaPeca() {
     $estoque_qtd_min = intval(addslashes(strip_tags($_POST['estoque_qtd_min'])));
     $estoque_qtd_atual = intval(addslashes(strip_tags($_POST['estoque_qtd_atual'])));
     $referencia = addslashes(strip_tags($_POST['referencia']));
+    $categoria = intval(addslashes(strip_tags($_POST['tipo'])));
     if (empty($nome) || $id == 0) {
         send_error(403, 'Nome da peça e ID obrigatório');
     }
@@ -117,11 +120,13 @@ function editaPeca() {
         'nome' => $nome,
         'estoque_qtd_min' => $estoque_qtd_min,
         'estoque_qtd_atual' => $estoque_qtd_atual,
+        'tipo' => $categoria,
         'referencia' => $referencia,
     ];      
-    $res = $db->prepare("UPDATE peca SET peca_nome = :nome, peca_estoque_qtd_min = :estoque_qtd_min, peca_estoque_qtd_atual = :estoque_qtd_atual, peca_referencia = :referencia WHERE peca_id = :id");
+    $res = $db->prepare("UPDATE peca SET peca_nome = :nome, peca_tipo = :tipo, peca_estoque_qtd_min = :estoque_qtd_min, peca_estoque_qtd_atual = :estoque_qtd_atual, peca_referencia = :referencia WHERE peca_id = :id");
     $res->bindParam(":id", $data['id'], PDO::PARAM_STR);
     $res->bindParam(":nome", $data['nome'], PDO::PARAM_STR);
+    $res->bindParam(":tipo", $data['tipo'], PDO::PARAM_STR);
     $res->bindParam(":estoque_qtd_min", $data['estoque_qtd_min'], PDO::PARAM_STR);
     $res->bindParam(":estoque_qtd_atual", $data['estoque_qtd_atual'], PDO::PARAM_STR);
     $res->bindParam(":referencia", $data['referencia'], PDO::PARAM_STR);
@@ -185,10 +190,11 @@ function getCategorias() {
     require_once "./DB.php";
     $res = $db->prepare("
         SELECT categoria_peca_nome, categoria_peca_id, 
-        SELECT(COUNT(*) FROM vinculo_categoria_peca WHERE vinculo_categoria_peca_categoria = categoria_id) AS categoria_peca_qtd_pecas
+        (SELECT COUNT(*) FROM vinculo_categoria_peca WHERE vinculo_categoria_peca_categoria = categoria_peca_id) AS categoria_peca_qtd_pecas
         FROM categoria_peca
         ORDER BY categoria_peca_id DESC
     ");
+    $res->execute();
     $row = $res->fetchAll();
     if (isset($row[0])) {
         send_success(200, $row);
@@ -323,3 +329,20 @@ function removeUsuario() {
     send_success();
 }
 // fim usuario
+
+// dash
+function getDashboard() {
+    require_once "./DB.php";
+    $res = $db->prepare("
+        SELECT 
+            (SELECT COUNT(*) FROM peca) AS qtd_pecas,
+            (SELECT COUNT(*) FROM usuario) AS qtd_usuarios
+        ;
+    ");
+    $res->execute();
+    $row = $res->fetchAll();
+    if (isset($row[0])) {
+        send_success(200, $row);
+    }
+    send_error(404);
+}

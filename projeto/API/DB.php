@@ -10,7 +10,7 @@
         $host = "localhost";
         $user = "root";
         $pass = "root";
-        $db = "db_perguntas_qr";
+        $db = "db_oficina";
         // db_schindler, P@ulO#675514!$
         try {
             $con = new PDO('mysql:host=' . $host . ';dbname=' . $db, $user, $pass, array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\''));

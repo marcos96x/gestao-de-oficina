@@ -65,5 +65,26 @@ function logout() {
             window.location.href = __BASE_URI__ + "index.html";
         }
     })
+}
 
+function autenticacao() {
+    let data = {
+        action: 'autenticaAdmin'        
+    };
+    $.ajax({
+        url: __BASE_API__,
+        type: 'POST',
+        data: data
+    }).done(res => {
+        res = JSON.parse(res);
+
+        if(res.status == undefined) {
+            console.log('erro na requisição');
+            return false;
+        }
+
+        if(res.status == 401) {
+            window.location.href = __BASE_URI__ + "index.html?autenticacao=false" ;
+        } 
+    })
 }
