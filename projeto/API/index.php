@@ -260,6 +260,7 @@ function getUsuarios() {
         FROM usuario
         ORDER BY usuario_id DESC
     ");
+    $res->execute();
     $row = $res->fetchAll();
     if (isset($row[0])) {
         send_success(200, $row);
