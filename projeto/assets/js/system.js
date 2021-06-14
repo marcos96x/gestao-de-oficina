@@ -62,20 +62,21 @@ function logout() {
         }
 
         if (res.status == 200) {
-            window.location.href = __BASE_URI__ + "index.html";
+            window.location.href = __BASE_URI__ + "/index.html";
         }
     })
 }
 
 function autenticacao() {
     let data = {
-        action: 'autenticaAdmin'        
+        action: 'autenticacao'        
     };
     $.ajax({
         url: __BASE_API__,
         type: 'POST',
         data: data
     }).done(res => {
+        console.log(res)
         res = JSON.parse(res);
 
         if(res.status == undefined) {
@@ -84,7 +85,7 @@ function autenticacao() {
         }
 
         if(res.status == 401) {
-            window.location.href = __BASE_URI__ + "index.html?autenticacao=false" ;
+            window.location.href = __BASE_URI__ + "/index.html?autenticacao=false" ;
         } 
     })
 }
